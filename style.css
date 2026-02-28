@@ -84,3 +84,68 @@ h1 {
     width: 100px;
     height: 100px;
 }
+
+/* Search Section */
+.search-section {
+    margin-bottom: 30px;
+    display: flex;
+    gap: 10px;
+}
+
+/* Input */
+#city-input {
+    padding: 12px 20px;
+    border-radius: 25px;
+    border: 2px solid #ddd;
+    flex: 1;
+    font-size: 1rem;
+    outline: none;
+}
+
+#city-input:focus {
+    border-color: #667eea;
+}
+
+/* Button */
+#search-btn {
+    padding: 12px 25px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#search-btn:hover {
+    opacity: 0.9;
+}
+
+/* Error Message */
+.error-message {
+    background: #ffe5e5;
+    color: #b30000;
+    padding: 15px;
+    border-radius: 10px;
+    border-left: 5px solid red;
+}
+
+/* Loading Spinner */
+.loading-container {
+    text-align: center;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #667eea;
+    border-radius: 50%;
+    margin: 20px auto;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
