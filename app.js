@@ -5,11 +5,86 @@ function WeatherApp(apiKey) {
 
     this.searchBtn = document.getElementById('search-btn');
     this.cityInput = document.getElementById('city-input');
-    this.weatherDisplay = document.getElementById('weather-display');
+    this.weatherDisplay = document.getElementById('weather-display')
+    this.recentSearchesSection = document.getElementById('recent-searches-section');
+    this.recentSearchesContainer = document.getElementById('recent-searches-container');
+
+    this.recentSearches = [];
+    this.maxRecentSearches = 5;
 
     this.init();
 }
 
+WeatherApp.prototype.loadRecentSearches = function() {
+    const saved = localStorage.getItem('recentSearches');
+    
+    if (saved) {
+        this.recentSearches = JSON.parse(saved);
+    }
+    
+    this.displayRecentSearches();
+};
+
+WeatherApp.prototype.saveRecentSearch = function(city) {
+    const cityName = city.charAt(0).toUpperCase() + city.slice(1).toLowerCase();
+
+    const index = this.recentSearches.indexOf(cityName);
+    if (index > -1) {
+        this.recentSearches.splice(index, 1);
+    }
+
+    this.recentSearches.unshift(cityName);
+
+    if (this.recentSearches.length > this.maxRecentSearches) {
+        this.recentSearches.pop();
+    }
+
+    localStorage.setItem('recentSearches', JSON.stringify(this.recentSearches));
+
+    this.displayRecentSearches();
+};
+
+WeatherApp.prototype.displayRecentSearches = function() {
+    this.recentSearchesContainer.innerHTML = '';
+
+    if (this.recentSearches.length === 0) {
+        this.recentSearchesSection.style.display = 'none';
+        return;
+    }
+
+    this.recentSearchesSection.style.display = 'block';
+
+    this.recentSearches.forEach(function(city) {
+        const btn = document.createElement('button');
+        btn.className = 'recent-search-btn';
+        btn.textContent = city;
+
+        btn.addEventListener('click', function() {
+            this.cityInput.value = city;
+            this.getWeather(city);
+        }.bind(this));
+
+        this.recentSearchesContainer.appendChild(btn);
+    }.bind(this));
+};
+
+WeatherApp.prototype.loadLastCity = function() {
+    const lastCity = localStorage.getItem('lastCity');
+
+    if (lastCity) {
+        this.getWeather(lastCity);
+    } else {
+        this.showWelcome();
+    }
+};
+
+WeatherApp.prototype.clearHistory = function() {
+    if (confirm('Clear all recent searches?')) {
+        this.recentSearches = [];
+        localStorage.removeItem('recentSearches');
+        this.displayRecentSearches();
+    }
+};
 // Initialize
 WeatherApp.prototype.init = function () {
     this.searchBtn.addEventListener(
@@ -24,6 +99,13 @@ WeatherApp.prototype.init = function () {
     });
 
     this.showWelcome();
+    this.loadRecentSearches();
+    this.loadLastCity();
+
+    const clearBtn = document.getElementById('clear-history-btn');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', this.clearHistory.bind(this));
+    }
 };
 
 // Welcome Screen
@@ -82,6 +164,8 @@ WeatherApp.prototype.getWeather = async function (city) {
 
         this.displayWeather(currentWeather.data);
         this.displayForecast(forecastData);
+        this.saveRecentSearch(city);
+        localStorage.setItem('lastCity', city);
 
     } catch (error) {
         if (error.response && error.response.status === 404) {
