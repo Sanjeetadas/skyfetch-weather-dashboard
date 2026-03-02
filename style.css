@@ -149,3 +149,28 @@ h1 {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
+
+.forecast-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #eee;
+}
+
+.forecast-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+}
+
+.forecast-card {
+    background: #f5f7ff;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    transition: 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.forecast-card:hover {
+    transform: translateY(-5px);
+}
